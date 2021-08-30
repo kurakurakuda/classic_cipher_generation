@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name:
+    ccg-mysql
+spec:
+  serviceName: ccg-mysql-service
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ccg-mysql
+  template:
+    metadata:
+      labels:
+        app: ccg-mysql
+    spec:
+      containers:
+        - name: mysql
+          image: kurakuda/ccg:mysql5.7
+#          imagePullPolicy: Never
+          env:
+            # Use secret in real usage
+            - name: MYSQL_DATABASE
+              value: classic_cipher_generation_db
+            - name: MYSQL_USER
+              value: user
+            - name: MYSQL_PASSWORD
+              value: password
+            - name: MYSQL_ROOT_PASSWORD
+              value: rootpassword
+          ports:
+            - containerPort: 3306
+#          lifecycle:
+#            poststart:
+#              exec:
+#                # TODO Place sql file by Config Map
+#                command: ["\.", /Data/mysql/initdb/init.sql ]
+          volumeMounts:
+            - name: ccg-db-volume
+              mountPath: /var/lib/mysql
+  volumeClaimTemplates:
+    - metadata:
+        name: ccg-db-volume
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1G

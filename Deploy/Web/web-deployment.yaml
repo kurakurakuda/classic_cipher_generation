@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ccg-web
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: ccg-web
+  template:
+    metadata:
+      labels:
+        app: ccg-web
+    spec:
+      containers:
+        - name: nginx
+          # TODO Run docker file in advance
+          image: kurakuda/ccg:web-nginx
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: nginx-conf
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+      volumes:
+        - name: nginx-conf
+          # 最初のConfigMapのsh script必要なのか？
+          configMap:
+            name: nginx-conf
+            items:
+              - key: nginx.conf
+                path: nginx.conf

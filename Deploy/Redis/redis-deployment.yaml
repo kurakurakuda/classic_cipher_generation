@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ccg-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ccg-redis
+  template:
+    metadata:
+      labels:
+        app: ccg-redis
+    spec:
+      containers:
+        - name: redis
+          image: redis:latest
+          ports:
+            - containerPort: 6379
+          volumeMounts:
+          - name: redis-volume
+            mountPath: /data/redis
+      volumes:
+        - name: redis-volume
+          emptyDir: {}

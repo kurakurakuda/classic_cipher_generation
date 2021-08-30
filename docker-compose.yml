@@ -1,0 +1,58 @@
+version: "3"
+services:
+  redis:
+    container_name: classic_cipher_generation_redis
+    image: "redis:latest"
+    ports:
+      - "6379:6379"
+    volumes:
+      - "./Data/data/redis:/data"
+  dbserver:
+    container_name: classic_cipher_generation_db
+    build: ./Data/mysql/
+    image: mysql:5.7
+    environment:
+      MYSQL_DATABASE: classic_cipher_generation_db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: rootpassword
+    expose:
+      - 3306
+    ports:
+      - 3306:3306
+    depends_on:
+      - redis
+#    Docker Fileに移動済み
+#    volumes:
+#      # MySQLの設定ファイル
+#      - ./Data/mysql/config:/etc/mysql/conf.d
+#      # 起動スクリプト
+#      - ./Data/mysql/initdb:/docker-entrypoint-initdb.d
+  app:
+    container_name: classic_cipher_generation_app
+    build: ./App/classic-cipher-generation-app/
+    ports:
+      - "8080:8080"
+    depends_on:
+      # dbserverが起動してから、appを起動
+      - dbserver
+    environment:
+      - DB_HOST=db
+      - DB_NAME=classic_cipher_generation_db
+      - DB_PORT=3306
+      - DB_USERNAME=user
+      - DB_PASSWORD=password
+    volumes:
+      - .:/app
+  web:
+    container_name: classic_cipher_generation_web
+    build: ./Web/
+    ports:
+      - "80:80"
+    depends_on:
+      - app
+    volumes:
+      - ./Web:/usr/share/nginx/html
+volumes:
+  mysql_db:
+    driver: local

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Classic Cipher Generation</title>
+        <meta charset="utf-8" />
+        <script src="http://code.jquery.com/jquery-3.3.1.min.js" defer></script>
+        <script type="text/javascript" src="js/main.js"></script>
+    </head>
+    <body>
+        <form action="#" method="post">
+            <p>テキスト: <br>
+                <input id="text" type="text" name="text">
+            </p>
+            <p>鍵: <br>
+                <input id="key" type="text" name="key">
+            </p>
+            <p>
+                <label for="type">タイプ</label><br>
+                <input type="radio" name="type" value="RAIL_FENCE" checked="checked"> レールフェンス
+                <input type="radio" name="type" value="CAESAR"> カエサルシフト
+                <input type="radio" name="type" value="KEY_PHRASE"> キーフレーズ
+            </p>
+            <p>
+                <label for="kind">暗号種類</label><br><br>
+                <input type="radio" name="kind" value="ENCRYPT" checked="checked"> 暗号化
+                <input type="radio" name="kind" value="DECRYPT"> 復号化
+            </p>
+            <button type="button" onclick="execute()">
+                GO !!
+            </button>
+        </form>
+        <p id="result"></p>
+    </body>
+</html>

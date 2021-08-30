@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ccg-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: ccg-app
+  template:
+    metadata:
+      labels:
+        app: ccg-app
+    spec:
+      containers:
+        - name: ccg-app
+          image: kurakuda/ccg:app-grails
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 8080
+          env:
+            - name: DB_HOST
+              value: "ccg-mysql-service"
+            - name: DB_NAME
+              value: "classic_cipher_generation_db"
+            - name: DB_PORT
+              value: "3306"
+            - name: DB_USERNAME
+              value: "user"
+            - name: DB_PASSWORD
+              value: "password"
