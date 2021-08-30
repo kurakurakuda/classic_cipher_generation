@@ -29,73 +29,76 @@ About motivation of a Web Service, I knew the classic ciphers as we encountered 
 ** Note: There are three ways to run this applications. However the configurations like endpoint, port etc are a little different for each way.  So below command steps doesn't guruantee to start application successfully. Please see it as  just reference purpose.  
 
 
-## Command List - k8s  
+### Command List - k8s  
 Deploy applications to k8s  
-### Redis
+#### Redis
 Docker  
 > docker pull redis  
+
 k8s  
 > kubectl apply -f Deploy/Redis/redis-deployment.yaml  
 > kubectl apply -f Deploy/Redis/redis-service.yaml  
 
-### MySql
+#### MySql
 Docker  
 > pushd ./Data/mysql  
 > docker image build -t kurakuda/ccg:mysql5.7 -f ./Dockerfile .  
 > popd  
+
 k8s
 > kubectl apply -f Deploy/MySql/mysql-statefulset.yaml  
-> kubectl apply -f Deploy/MySql/mysql-service.yaml
-> 
-> kubectl logs ccg-mysql -c ccg-mysql 
-> kubectl exec -it <Pod> -- mysql -u user -p
+> kubectl apply -f Deploy/MySql/mysql-service.yaml  
+> kubectl logs ccg-mysql -c ccg-mysql  
+> kubectl exec -it <Pod> -- mysql -u user -p  
 
-### App
+#### App
 Docker  
 > pushd ./App/classic-cipher-generation-app  
 > docker image build -t kurakuda/ccg:app-grails -f ./Dockerfile .  
 > popd  
+
 k8s
 > kubectl apply -f Deploy/App/app-deployment.yaml  
-> kubectl apply -f Deploy/App/app-service.yaml
+> kubectl apply -f Deploy/App/app-service.yaml  
 
-### Web
+#### Web
 Docker  
 > pushd ./Web  
 > docker image build -t kurakuda/ccg:web-nginx -f ./Dockerfile .  
 > popd  
+
 k8s  
-> kubectl create configmap nginx-conf --from-file=Web/deployment/nginx.conf
+> kubectl create configmap nginx-conf --from-file=Web/deployment/nginx.conf  
 > kubectl create configmap server-conf --from-file=Web/deployment/server.conf  
 > kubectl apply -f Deploy/Web/web-deployment.yaml  
 > kubectl apply -f Deploy/Web/web-service.yaml  
 
-### LB
+#### LB
 k8s  
 > kubectl apply -f Deploy/LB/nodeport.yaml  
 
-## Command List - Docker  
+### Command List - Docker  
 Run Applications by using docker command  
 Prerequisite  
 Build images by command  for k8s  
 
-### Redis
+#### Redis
 Docker  
 > docker run -d -p 6379:6379 --name ccg-redis redis:latest  
 
-### MySql
+#### MySql
 Docker  
 > docker run -d -p 3306:3306 -e MYSQL_DATABASE=classic_cipher_generation_db -e MYSQL_USER=user -e MYSQL_PASSWORD=password -e MYSQL_ROOT_PASSWORD=rootpassword --name ccg-mysql kurakuda/ccg:mysql5.7    
 
-### App
+#### App
 Docker  
 > docker run -d -v :/app -e DB_HOST=db -p 8080:8080 -e DB_NAME=ccg-db -e DB_PORT=3306 -e DB_USERNAME=user -e DB_PASSWORD=password --name ccg-app kurakuda/ccg:app-grails  
 
-### Web
+#### Web
 Docker  
 > docker run -d -p 80:80 -v :/usr/share/nginx/html --name ccg-web kurakuda/ccg:web-nginx  
 
-## Command List - Docker Compose  
+### Command List - Docker Compose  
 Run Applications by using Docker Compose  
 
 - Start / stop the applications  
